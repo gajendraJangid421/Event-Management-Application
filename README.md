@@ -1,1 +1,1 @@
-# Event-Management-Api
+# Event-Management-Application

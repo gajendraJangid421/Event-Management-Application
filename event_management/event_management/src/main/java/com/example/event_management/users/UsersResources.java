@@ -23,7 +23,7 @@ public class UsersResources {
         return usersRepository.findAll();
     }
 
-    @PostMapping(path = "/post")
+    @PostMapping(path = "/sign-in")
     public ResponseEntity<UsersDetails> createNewUser(@Valid @RequestBody UsersDetails usersDetails) {
         UsersDetails savedUsersDetails = usersRepository.save(usersDetails);
 
@@ -35,7 +35,7 @@ public class UsersResources {
         return ResponseEntity.created(location).build();
     }
 
-    @DeleteMapping(path = "/delete/{id}")
+    @DeleteMapping(path = "/sign-out/{id}")
     public void deleteUser(@PathVariable int id) {
 
         usersRepository.deleteById(id);

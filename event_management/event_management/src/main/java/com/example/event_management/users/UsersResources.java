@@ -10,6 +10,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@RequestMapping(path = "/api/users)
 public class UsersResources {
 
     private UsersRepository usersRepository;
@@ -17,12 +18,12 @@ public class UsersResources {
     public UsersResources(UsersRepository usersRepository){
         this.usersRepository = usersRepository;
     }
-    @GetMapping(path = "/api/users")
+    @GetMapping(path = "/get")
     public List<UsersDetails> retrieveAllUsersList() {
         return usersRepository.findAll();
     }
 
-    @PostMapping(path = "/api/users")
+    @PostMapping(path = "/post")
     public ResponseEntity<UsersDetails> createNewUser(@Valid @RequestBody UsersDetails usersDetails) {
         UsersDetails savedUsersDetails = usersRepository.save(usersDetails);
 
@@ -34,7 +35,7 @@ public class UsersResources {
         return ResponseEntity.created(location).build();
     }
 
-    @DeleteMapping(path = "/api/users/{id}")
+    @DeleteMapping(path = "/delete/{id}")
     public void deleteUser(@PathVariable int id) {
 
         usersRepository.deleteById(id);

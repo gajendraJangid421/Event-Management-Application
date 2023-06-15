@@ -48,9 +48,9 @@ public class UsersController {
 
     //for user
     @PatchMapping(path = "/{id}")
-    public Users update(@PathVariable(value = "id") String usersId, @Valid @RequestBody Users users){
+    public Users update(@PathVariable(value = "id") String userId, @Valid @RequestBody Users users){
 
-        return usersService.update(usersId, users);
+        return usersService.update(userId, users);
     }
 
     //for user

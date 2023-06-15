@@ -56,7 +56,7 @@ public class UsersService {
             throw new ExistingUsernameException("Existing Username");
         }
 
-        users.setUsersId(UUID.randomUUID().toString());
+        users.setId(UUID.randomUUID().toString());
 
 //        BCryptPasswordEncoder bCrypt = new BCryptPasswordEncoder();
 //        String encryptedPassword = bCrypt.encode(users.getPassword());
@@ -72,17 +72,22 @@ public class UsersService {
     }
 
     public Users update(String id, Users users) {
-        Optional<Users> user = usersRepository.findById(id);
+        Optional<Users> updateUser = usersRepository.findById(id);
 
-        if(user.isEmpty()){
+        if(updateUser.isEmpty()){
             throw new NotFoundException("User Id not found");
         }
 
-        user.get().setFullName(users.getFullName());
-        user.get().setPassword(users.getPassword());
-        user.get().setMobileNumber(users.getMobileNumber());
+        updateUser.get().setFullName(users.getFullName());
+        updateUser.get().setMobileNumber(users.getMobileNumber());
 
-        return usersRepository.save(user.get());
+        if(users.getOldPassword().equals(updateUser.get().getPassword())){
+            updateUser.get().setPassword(users.getNewPassword());
+        }else {
+            throw new WrongPasswordException("Old Password is not matching");
+        }
+
+        return usersRepository.save(updateUser.get());
     }
 
     public Users authenticationOfUserUsingEmail(ForgetPassword forgetPassword) {

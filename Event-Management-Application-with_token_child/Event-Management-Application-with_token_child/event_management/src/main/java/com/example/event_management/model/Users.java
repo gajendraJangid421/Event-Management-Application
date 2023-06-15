@@ -16,8 +16,8 @@ import lombok.*;
 public class Users {
 
     @Id
-    @Column(name = "users_id")
-    private String usersId;
+    @Column(name = "id")
+    private String id;
     @Column(name = "username")
     private String username;
     @Column(name = "password")
@@ -30,6 +30,9 @@ public class Users {
     private String mobileNumber;
     @Column(name = "role")
     private String role;
+
+    private String oldPassword;
+    private String newPassword;
 
 //    public void setPassword(String password) {
 //

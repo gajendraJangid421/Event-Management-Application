@@ -1,9 +1,8 @@
 package com.example.event_management.controller;
 
+import com.example.event_management.model.BookEventRequest;
 import com.example.event_management.model.BookEvents;
-import com.example.event_management.model.Bookmark;
 import com.example.event_management.model.Events;
-import com.example.event_management.model.Users;
 import com.example.event_management.service.EventsService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +29,7 @@ public class EventsController {
         return eventsService.findById(id);
     }
 
+    //remove this
     //for admin and user
     @GetMapping(path = "/event-name/{eventName}")
     public Events retrieveEventByEventName(@PathVariable String eventName){
@@ -54,16 +54,18 @@ public class EventsController {
         eventsService.delete(id);
     }
 
+    //convert it into put or patch
     //for user
     @PostMapping(path = "/book")
-    public BookEvents bookAnEvent(@Valid @RequestBody Events events, @Valid @RequestBody Users users){
-        return eventsService.bookAnEvent(events, users);
+    public BookEvents bookAnEvent(@Valid @RequestBody BookEventRequest bookEventRequest){
+        return eventsService.bookAnEvent(bookEventRequest);
     }
 
     //for user
     @PostMapping(path = "/bookmark")
-    public Bookmark bookmarkAnEvent(@Valid @RequestBody Events events, @Valid @RequestBody Users users){
-        return eventsService.bookmarkAnEvent(events, users);
+    public BookEvents bookmarkAnEvent(@Valid @RequestBody BookEventRequest bookEventRequest){
+        return eventsService.bookmarkAnEvent(bookEventRequest);
     }
+
 
 }

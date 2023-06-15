@@ -7,20 +7,23 @@ import jakarta.persistence.Table;
 import lombok.*;
 
 @Entity
-@Table(name = "book")
+@Table(name = "session")
 @Builder
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookEvents {
+public class Session {
 
     @Id
-    @Column(name = "book_id")
-    private String bookId;
-    @Column(name = "events_id")
-    private String eventsId;
-    @Column(name = "users_id")
-    private String usersId;
+    @Column(name = "id")
+    String id;
+    @Column(name = "user_Id")
+    String userId;
+    @Column(name = "token")
+    String token;
+    @Column(name = "token_expiry")
+    String tokenExpiry;
+
 }

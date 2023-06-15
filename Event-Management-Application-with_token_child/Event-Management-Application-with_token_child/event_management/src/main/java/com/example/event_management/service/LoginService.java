@@ -35,8 +35,8 @@ public class LoginService {
             if(isPasswordCorrect){
 
                 Session session = Session.builder()
-                        .loginId(UUID.randomUUID().toString())
-                        .usersId(users.getUsersId())
+                        .id(UUID.randomUUID().toString())
+                        .userId(users.getId())
                         .token(UUID.randomUUID().toString())
                         .tokenExpiry(Timestamp.from(Instant.now()).toString())
                         .build();
@@ -44,7 +44,7 @@ public class LoginService {
                 session = sessionRepository.save(session);
 
                 return LoginResponse.builder()
-                        .usersId(session.getUsersId())
+                        .userId(session.getUserId())
                         .token(session.getToken())
                         .tokenExpiry(session.getTokenExpiry())
                         .build();

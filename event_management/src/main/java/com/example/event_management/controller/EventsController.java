@@ -30,12 +30,6 @@ public class EventsController {
         return eventsService.findById(id);
     }
 
-//    //for admin and user
-//    @GetMapping(path = "/event-name/{eventName}")
-//    public Events retrieveEventByEventName(@PathVariable String eventName){
-//        return eventsService.findByName(eventName);
-//    }
-
     //for admin
     @PostMapping(path = "/add-event")
     public Events save(@Valid @RequestBody Events events){

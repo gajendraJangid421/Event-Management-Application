@@ -34,16 +34,6 @@ public class EventsService {
         return event;
     }
 
-//    public Events findByName(String eventName) {
-//        Events event = eventsRepository.findByName(eventName);
-//
-//        if (Objects.isNull(event)) {
-//            throw new NotFoundException("Event not found");
-//        }
-//
-//        return event;
-//    }
-
     public Events save(Events event) {
         event.setId(UUID.randomUUID().toString());
 

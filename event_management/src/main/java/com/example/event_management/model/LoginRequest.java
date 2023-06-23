@@ -1,5 +1,6 @@
 package com.example.event_management.model;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -10,10 +11,11 @@ import lombok.*;
 @AllArgsConstructor
 public class LoginRequest {
 
-    @NotNull(message = "Username can not be empty")
+    @NotBlank(message = "Username can not be blank")
     private String username;
 
-    @NotNull(message = "Password can not be empty")
+    @NotBlank(message = "Password can not be blank")
     private String password;
 
+    private String token;
 }

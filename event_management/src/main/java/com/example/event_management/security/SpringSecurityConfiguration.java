@@ -17,7 +17,6 @@ public class SpringSecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-
         http.cors().and().csrf().disable();
 
         return http.build();
@@ -34,5 +33,4 @@ public class SpringSecurityConfiguration {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 }

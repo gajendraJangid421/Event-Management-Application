@@ -19,10 +19,13 @@ public class Session {
     @Id
     @Column(name = "id")
     private String id;
+
     @Column(name = "user_Id")
     private String userId;
+
     @Column(name = "token")
     private String token;
+
     @Column(name = "token_expiry")
     private String tokenExpiry;
 

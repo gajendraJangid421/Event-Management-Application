@@ -1,8 +1,7 @@
 package com.example.event_management.service;
 
-import com.example.event_management.exception.ExistingUsernameException;
-import com.example.event_management.exception.NotFoundException;
-import com.example.event_management.exception.WrongPasswordException;
+import com.example.event_management.exception.DuplicateUsernameException;
+import com.example.event_management.exception.UnAuthorisedException;
 import com.example.event_management.model.ForgetPassword;
 import com.example.event_management.model.ResetPasswordRequest;
 import com.example.event_management.repository.UsersRepository;
@@ -17,16 +16,14 @@ import java.util.*;
 public class UsersService {
 
     @Autowired
-    UsersRepository usersRepository;
+    private UsersRepository usersRepository;
+
+    private UserEventService userEventService;
 
     static List<Users> usersList = new ArrayList<>();
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
     boolean isPasswordCorrect = false;
 
-//    private static int usersCount = 1000;
-//        static {
-//        usersList.add(new Users(++usersCount, "Gajendra", "G", "J", "email", "123", 432, "user"));
-//    }
     public List<Users> findAll() {
         return usersRepository.findAll();
     }
@@ -34,8 +31,8 @@ public class UsersService {
     public Users findByUsername(String username) {
         Users user = usersRepository.findByUsername(username);
 
-        if(Objects.nonNull(user)){
-            throw new NotFoundException("Username not found");
+        if(Objects.isNull(user)){
+            throw new UnAuthorisedException("User not found");
         }
 
         return user;
@@ -43,33 +40,32 @@ public class UsersService {
 
     public Users findById(String id) {
 
-        Users user = usersRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found"));
+        Users user = usersRepository.findById(id).orElseThrow(() -> new UnAuthorisedException("User not found"));
 
         return user;
     }
 
     public Users save(Users users){
         if(findByUsername(users.getUsername())!=null){
-            throw new ExistingUsernameException("Existing Username");
+            throw new DuplicateUsernameException("Existing Username");
         }
 
         users.setId(UUID.randomUUID().toString());
 
-//        BCryptPasswordEncoder bCrypt = new BCryptPasswordEncoder();
-//        String encryptedPassword = bCrypt.encode(users.getPassword());
-//        users.setPassword(encryptedPassword);
-
         users = usersRepository.save(users);
-//        usersList.add(users);
+
         return users;
     }
 
     public void deleteById(String id){
         usersRepository.deleteById(id);
+
+        userEventService.deleteByUserId(id);
     }
 
-    public Users update(String id, Users users) {
-        Users updateUser = usersRepository.findById(id).orElseThrow(() -> new NotFoundException("User Id not found"));
+
+    public Users update(Users users) {
+        Users updateUser = usersRepository.findById(users.getId()).orElseThrow(() -> new UnAuthorisedException("User Id not found"));
 
         updateUser.setFullName(users.getFullName());
         updateUser.setMobileNumber(users.getMobileNumber());
@@ -78,26 +74,25 @@ public class UsersService {
     }
 
     public Users resetPassword(String id, ResetPasswordRequest resetPasswordRequest){
-        Users passwordChangedUser = usersRepository.findById(id).orElseThrow(() -> new NotFoundException("User Id not found"));
+        Users passwordChangedUser = usersRepository.findById(id).orElseThrow(() -> new UnAuthorisedException("User Id not found"));
 
         isPasswordCorrect = encoder.matches(passwordChangedUser.getPassword(), resetPasswordRequest.getOldPassword());
-//        boolean isPasswordCorrect = resetPasswordRequest.getOldPassword().equals(passwordChangedUser.getPassword())
 
         if(isPasswordCorrect){
             passwordChangedUser.setPassword(resetPasswordRequest.getNewPassword());
         }else {
-            throw new WrongPasswordException("Old Password is not matching");
+            throw new UnAuthorisedException("Old Password is not matching");
         }
 
         return usersRepository.save(passwordChangedUser);
     }
 
-    public Users authenticationOfUserUsingEmail(ForgetPassword forgetPassword) {
+    public Users authenticateUserUsingEmail(ForgetPassword forgetPassword) {
 
         Users users = usersRepository.findByEmail(forgetPassword.getEmail());
 
-        if(Objects.nonNull(users)) {
-            throw new NotFoundException("Email not exists");
+        if(Objects.isNull(users)) {
+            throw new UnAuthorisedException("Email not exists");
         }
 
         isPasswordCorrect = forgetPassword.getNewPassword().equals(forgetPassword.getConfirmPassword());
@@ -106,7 +101,7 @@ public class UsersService {
             users.setPassword(forgetPassword.getNewPassword());
             usersRepository.save(users);
         }else{
-            throw new WrongPasswordException("Password not matching");
+            throw new UnAuthorisedException("Password not matching");
         }
 
         return users;

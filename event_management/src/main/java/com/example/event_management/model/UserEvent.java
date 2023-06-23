@@ -11,19 +11,11 @@ import lombok.*;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookEvents {
+public class UserEvent {
 
     @Id
     @Column(name = "id")
     private String id;
-
-//    @ManyToOne
-//    @JoinColumn(name = "event_id")
-//    public Events events;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "user_id")
-//    public Users users;
 
     @Column(name = "event_id")
     private String eventId;
@@ -31,7 +23,13 @@ public class BookEvents {
     @Column(name = "user_id")
     private String userId;
 
-    @Column(name = "status")
-    private String status;
+    @Column(name = "booked")
+    private boolean booked;
+
+    @Column(name = "bookmarked")
+    private boolean bookmarked;
+
+    @Column(name = "attended")
+    private boolean attended;
 
 }

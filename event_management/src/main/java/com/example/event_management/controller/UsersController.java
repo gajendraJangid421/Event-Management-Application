@@ -51,7 +51,9 @@ public class UsersController {
     @PatchMapping(path = "/reset-password/{id}")
     public Users resetPassword(@PathVariable(value = "id") String userId, @Valid @RequestBody ResetPasswordRequest resetPasswordRequest){
 
-        return usersService.resetPassword(userId, resetPasswordRequest);
+        resetPasswordRequest.setUserId(userId);
+
+        return usersService.resetPassword(resetPasswordRequest);
     }
 
     //for user

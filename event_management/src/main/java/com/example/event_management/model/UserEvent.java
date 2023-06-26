@@ -23,13 +23,13 @@ public class UserEvent {
     @Column(name = "user_id")
     private String userId;
 
-    @Column(name = "booked")
+    @Column(name = "booked", columnDefinition = "BIT")
     private boolean booked;
 
-    @Column(name = "bookmarked")
+    @Column(name = "bookmarked", columnDefinition = "BIT")
     private boolean bookmarked;
 
-    @Column(name = "attended")
+    @Column(name = "attended", columnDefinition = "BIT")
     private boolean attended;
 
 }

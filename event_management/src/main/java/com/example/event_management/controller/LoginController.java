@@ -20,3 +20,11 @@ public class LoginController {
         return loginService.authenticateUser(loginRequest);
     }
 }
+
+//deletebyemailid not resolved and deletebyuserid able to delete userId and resolved by converting boolean to bit
+
+//resetpassword
+
+//login resolved using @autowired SessionService
+
+//token got resolved by replacing return null to exception and vice versa added @Service

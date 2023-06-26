@@ -18,6 +18,7 @@ public class UsersService {
     @Autowired
     private UsersRepository usersRepository;
 
+    @Autowired
     private UserEventService userEventService;
 
     static List<Users> usersList = new ArrayList<>();
@@ -28,19 +29,19 @@ public class UsersService {
         return usersRepository.findAll();
     }
 
-    public Users findByUsername(String username) {
-        Users user = usersRepository.findByUsername(username);
+    public Users findById(String id) {
 
-        if(Objects.isNull(user)){
-            throw new UnAuthorisedException("User not found");
-        }
+        Users user = usersRepository.findById(id).orElseThrow(() -> new UnAuthorisedException("User not found"));
 
         return user;
     }
 
-    public Users findById(String id) {
+    public Users findByUsername(String username) {
+        Users user = usersRepository.findByUsername(username);
 
-        Users user = usersRepository.findById(id).orElseThrow(() -> new UnAuthorisedException("User not found"));
+        if(Objects.isNull(user)){
+            return null;
+        }
 
         return user;
     }
@@ -73,13 +74,15 @@ public class UsersService {
         return usersRepository.save(updateUser);
     }
 
-    public Users resetPassword(String id, ResetPasswordRequest resetPasswordRequest){
-        Users passwordChangedUser = usersRepository.findById(id).orElseThrow(() -> new UnAuthorisedException("User Id not found"));
+    public Users resetPassword(ResetPasswordRequest resetPasswordRequest){
+        Users passwordChangedUser = usersRepository.findById(resetPasswordRequest.getUserId()).
+                                    orElseThrow(() -> new UnAuthorisedException("User Id not found"));
 
         isPasswordCorrect = encoder.matches(passwordChangedUser.getPassword(), resetPasswordRequest.getOldPassword());
 
         if(isPasswordCorrect){
             passwordChangedUser.setPassword(resetPasswordRequest.getNewPassword());
+            System.out.println("passwordChangedUser");
         }else {
             throw new UnAuthorisedException("Old Password is not matching");
         }

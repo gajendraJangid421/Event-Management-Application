@@ -6,15 +6,18 @@ import com.example.event_management.model.Session;
 import com.example.event_management.model.Users;
 import com.example.event_management.repository.SessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+@Service
 public class SessionService {
 
     @Autowired
@@ -36,17 +39,16 @@ public class SessionService {
                 .token(session.getToken())
                 .tokenExpiry(session.getTokenExpiry())
                 .build();
-
     }
 
     public Session isTokenExpired(String token){
         Session session = sessionRepository.findByToken(token);
 
         if(Objects.isNull(session)){
-            throw new UnAuthorisedException("token not found");
+            return null;
         }
 
-        long differenceInTime = difference(Timestamp.from(Instant.now())+"", session.getTokenExpiry());
+        long differenceInTime = difference(Timestamp.from(Instant.now()).toString(), session.getTokenExpiry());
 
         if(differenceInTime < 3600000 * 24){
             return session;
@@ -54,7 +56,7 @@ public class SessionService {
 
         sessionRepository.deleteById(session.getId());
 
-        return null;
+        throw new UnAuthorisedException("login again");
     }
 
     public long difference(String now, String before){

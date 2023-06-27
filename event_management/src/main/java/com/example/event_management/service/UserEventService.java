@@ -16,11 +16,23 @@ public class UserEventService {
     UserEventRepository userEventRepository;
 
     public void deleteByEventId(String id) {
-        userEventRepository.deleteByEventId(id);
+        List<UserEvent> userEventList = userEventRepository.findAll();
+
+        for (UserEvent userEvent : userEventList) {
+            if (userEvent.getEventId() != null && userEvent.getEventId().toString().equals(id)) {
+                userEventRepository.deleteById(userEvent.getId());
+            }
+        }
     }
 
     public void deleteByUserId(String id) {
-        userEventRepository.deleteByUserId(id);
+        List<UserEvent> userEventList = userEventRepository.findAll();
+
+        for (UserEvent userEvent : userEventList) {
+            if (userEvent.getUserId() != null && userEvent.getUserId().toString().equals(id)) {
+                userEventRepository.deleteById(userEvent.getId());
+            }
+        }
     }
 
     public void bookAnEvent(UserEvent userEvent) {

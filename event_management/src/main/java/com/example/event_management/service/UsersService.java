@@ -22,7 +22,9 @@ public class UsersService {
     private UserEventService userEventService;
 
     static List<Users> usersList = new ArrayList<>();
+
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
     boolean isPasswordCorrect = false;
 
     public List<Users> findAll() {
@@ -75,19 +77,18 @@ public class UsersService {
     }
 
     public Users resetPassword(ResetPasswordRequest resetPasswordRequest){
-        Users passwordChangedUser = usersRepository.findById(resetPasswordRequest.getUserId()).
+        Users user = usersRepository.findById(resetPasswordRequest.getUserId()).
                                     orElseThrow(() -> new UnAuthorisedException("User Id not found"));
 
-        isPasswordCorrect = encoder.matches(passwordChangedUser.getPassword(), resetPasswordRequest.getOldPassword());
+        isPasswordCorrect = encoder.matches(resetPasswordRequest.getOldPassword(), user.getPassword());
 
         if(isPasswordCorrect){
-            passwordChangedUser.setPassword(resetPasswordRequest.getNewPassword());
-            System.out.println("passwordChangedUser");
+            user.setPassword(resetPasswordRequest.getNewPassword());
         }else {
             throw new UnAuthorisedException("Old Password is not matching");
         }
 
-        return usersRepository.save(passwordChangedUser);
+        return usersRepository.save(user);
     }
 
     public Users authenticateUserUsingEmail(ForgetPassword forgetPassword) {

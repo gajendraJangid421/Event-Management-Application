@@ -8,13 +8,15 @@ import com.example.event_management.model.ResetPasswordRequest;
 import com.example.event_management.repository.UsersRepository;
 import com.example.event_management.model.Users;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
-public class UsersService {
+public class UsersService{
 
     @Autowired
     UsersRepository usersRepository;
@@ -111,5 +113,6 @@ public class UsersService {
 
         return users;
     }
+
 
 }

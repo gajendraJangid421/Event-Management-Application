@@ -9,6 +9,7 @@ import com.example.event_management.model.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 
@@ -23,17 +24,7 @@ public class LoginService {
 
     public LoginResponse authenticateUser(LoginRequest loginRequest){
 
-        Session session = sessionService.isTokenExpired(loginRequest.getToken());
-
-        if(Objects.nonNull(session)){
-            return LoginResponse.builder()
-                    .userId(session.getUserId())
-                    .token(session.getToken())
-                    .tokenExpiry(session.getTokenExpiry())
-                    .build();
-        }
-
-        if (Objects.isNull(loginRequest.getUsername()) || Objects.isNull(loginRequest.getPassword())){
+        if (StringUtils.isEmpty(loginRequest.getUsername()) || StringUtils.isEmpty(loginRequest.getPassword())){
             throw new UnAuthorisedException("Username and Password can not be blank");
         }
 
@@ -53,5 +44,9 @@ public class LoginService {
         else {
             throw new UnAuthorisedException("Username not found");
         }
+   }
+
+   public void logOut(String token){
+        sessionService.deleteSession(token);
    }
 }

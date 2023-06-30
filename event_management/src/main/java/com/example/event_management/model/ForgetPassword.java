@@ -1,6 +1,7 @@
 package com.example.event_management.model;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Getter
@@ -13,9 +14,11 @@ public class ForgetPassword {
     private String email;
 
     @NotBlank(message = "Add New Password!")
+    @Size(min = 8)
     private String newPassword;
 
     @NotBlank(message = "Add Confirm Password!")
+    @Size(min = 8)
     private String confirmPassword;
 
 }

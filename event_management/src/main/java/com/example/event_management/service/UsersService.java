@@ -31,7 +31,7 @@ public class UsersService {
         return usersRepository.findAll();
     }
 
-    public Users findById(String id) {
+    public Users getById(String id) {
 
         Users user = usersRepository.findById(id).orElseThrow(() -> new UnAuthorisedException("User not found"));
 
@@ -49,8 +49,8 @@ public class UsersService {
     }
 
     public Users save(Users users){
-        if(findByUsername(users.getUsername())!=null){
-            throw new DuplicateUsernameException("Existing Username");
+        if(Objects.nonNull(findByUsername(users.getUsername()))){
+            throw new DuplicateUsernameException("'userName' is not available. It is already used by another user");
         }
 
         users.setId(UUID.randomUUID().toString());
@@ -105,7 +105,7 @@ public class UsersService {
             users.setPassword(forgetPassword.getNewPassword());
             usersRepository.save(users);
         }else{
-            throw new UnAuthorisedException("Password not matching");
+            throw new UnAuthorisedException("'newPassword' and 'confirmPassword' are not matching");
         }
 
         return users;

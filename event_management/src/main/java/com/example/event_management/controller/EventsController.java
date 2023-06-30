@@ -21,8 +21,8 @@ public class EventsController {
 
     //for admin
     @GetMapping(path = "/{id}")
-    public Events findById(@PathVariable String id){
-        return eventsService.findById(id);
+    public Events getById(@PathVariable String id){
+        return eventsService.getById(id);
     }
 
     //for admin
@@ -33,7 +33,7 @@ public class EventsController {
 
     //for admin
     @PutMapping(path = "/{id}")
-    public Events UpdateById(@PathVariable String id, @Valid @RequestBody Events events){
+    public Events updateById(@PathVariable String id, @Valid @RequestBody Events events){
         events.setId(id);
 
         return eventsService.update(events);
@@ -42,7 +42,7 @@ public class EventsController {
     //for admin
     @DeleteMapping(path = "/{id}")
     public void deleteById(@PathVariable String id){
-        eventsService.delete(id);
+        eventsService.deleteById(id);
     }
 
 }

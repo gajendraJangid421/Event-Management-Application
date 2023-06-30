@@ -2,6 +2,7 @@ package com.example.event_management.model;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Getter
@@ -15,6 +16,7 @@ public class LoginRequest {
     private String username;
 
     @NotBlank(message = "Password can not be blank")
+    @Size(min = 8)
     private String password;
 
     private String token;

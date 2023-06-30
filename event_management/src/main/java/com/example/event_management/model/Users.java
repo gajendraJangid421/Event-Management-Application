@@ -20,29 +20,29 @@ public class Users {
     private String id;
 
     @Column(name = "username")
-    @NotBlank(message = "Add unique Username!")
+    @NotBlank(message = "'username' should not be null or blank")
     private String username;
 
     @Column(name = "password")
-    @NotBlank(message = "Add Password!")
+    @NotBlank(message = "'password' should not be null or blank")
     @Size(min = 8)
     private String password;
 
     @Column(name = "full_name")
-    @NotBlank(message = "Add Name!")
+    @NotBlank(message = "'fullName' should not be null or blank")
     private String fullName;
 
     @Column(name = "email")
-    @NotBlank(message = "Add Email!")
+    @NotBlank(message = "'email' should not be null or blank")
     private String email;
 
     @Column(name = "mobile_number")
-    @NotBlank(message = "Add Mobile!")
+    @NotBlank(message = "'mobileNumber' should not be null or blank")
     private String mobileNumber;
 
     @Column(name = "role")
-    @NotBlank(message = "Choose Role!")
-    private String role;
+    @NotBlank(message = "'role' should not be null or blank")
+    private RoleStatus roleStatus;
 
     public void setPassword(String password) {
         BCryptPasswordEncoder bCrypt = new BCryptPasswordEncoder();

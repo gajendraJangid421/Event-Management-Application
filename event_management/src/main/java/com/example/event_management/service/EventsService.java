@@ -1,5 +1,6 @@
 package com.example.event_management.service;
 
+import com.example.event_management.exception.ObjectValidationException;
 import com.example.event_management.exception.UnAuthorisedException;
 import com.example.event_management.model.Events;
 import com.example.event_management.repository.EventsRepository;
@@ -19,18 +20,23 @@ public class EventsService {
     private UserEventService userEventService;
 
 
-    public List<Events> findAll() {
+    public List<Events>  findAll() {
         return eventsRepository.findAll();
     }
 
-    public Events findById(String id) {
+    public Events getById(String id) {
         Events event = eventsRepository.findById(id).orElseThrow(() -> new UnAuthorisedException("Event not found"));
 
         return event;
     }
 
     public Events save(Events event) {
+        if(event.getTotalSeats()<1){
+            throw new ObjectValidationException("'totalSeats' should be greater than 0");
+        }
+
         event.setId(UUID.randomUUID().toString());
+        event.setSeatsLeft(event.getTotalSeats());
 
         event = eventsRepository.save(event);
 
@@ -38,6 +44,10 @@ public class EventsService {
     }
 
     public Events update(Events events) {
+        if(events.getTotalSeats()<1){
+            throw new ObjectValidationException("'totalSeats' should be greater than 0");
+        }
+
         Events event = eventsRepository.findById(events.getId()).orElseThrow(() -> new UnAuthorisedException("Event not found"));
 
         event.setName(events.getName());
@@ -49,7 +59,7 @@ public class EventsService {
         return eventsRepository.save(event);
     }
 
-    public void delete(String id) {
+    public void deleteById(String id) {
         eventsRepository.deleteById(id);
 
         userEventService.deleteByEventId(id);

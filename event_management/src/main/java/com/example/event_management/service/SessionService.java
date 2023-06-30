@@ -13,7 +13,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -41,35 +40,8 @@ public class SessionService {
                 .build();
     }
 
-    public Session isTokenExpired(String token){
-        Session session = sessionRepository.findByToken(token);
-
-        if(Objects.isNull(session)){
-            return null;
-        }
-
-        long differenceInTime = difference(Timestamp.from(Instant.now()).toString(), session.getTokenExpiry());
-
-        if(differenceInTime < 3600000 * 24){
-            return session;
-        }
-
-        sessionRepository.deleteById(session.getId());
-
-        throw new UnAuthorisedException("login again");
-    }
-
-    public long difference(String now, String before){
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.SSS");
-
-        try {
-            Date presentDate = sdf.parse(now);
-            Date beforeDate = sdf.parse(before);
-
-            return presentDate.getTime() - beforeDate.getTime();
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+    public void deleteSession(String token) {
+        sessionRepository.deleteById(sessionRepository.findByToken(token).getId());
     }
 
 }

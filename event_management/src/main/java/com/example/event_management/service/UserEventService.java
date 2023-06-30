@@ -1,11 +1,15 @@
 package com.example.event_management.service;
 
+import com.example.event_management.exception.ObjectValidationException;
+import com.example.event_management.model.Events;
 import com.example.event_management.model.UserEvent;
+import com.example.event_management.repository.EventsRepository;
 import com.example.event_management.repository.UserEventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.testng.annotations.Test;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -15,47 +19,54 @@ public class UserEventService {
     @Autowired
     UserEventRepository userEventRepository;
 
-    public void deleteByEventId(String id) {
-        List<UserEvent> userEventList = userEventRepository.findAll();
+    @Autowired
+    EventsRepository eventsRepository;
 
-        for (UserEvent userEvent : userEventList) {
-            if (userEvent.getEventId() != null && userEvent.getEventId().toString().equals(id)) {
-                userEventRepository.deleteById(userEvent.getId());
-            }
-        }
+    @Test
+    @Transactional
+    public void deleteByEventId(String eventId) {
+
+        userEventRepository.deleteByEventId(eventId);
     }
 
-    public void deleteByUserId(String id) {
-        List<UserEvent> userEventList = userEventRepository.findAll();
+    @Test
+    @Transactional
+    public void deleteByUserId(String userId) {
 
-        for (UserEvent userEvent : userEventList) {
-            if (userEvent.getUserId() != null && userEvent.getUserId().toString().equals(id)) {
-                userEventRepository.deleteById(userEvent.getId());
-            }
-        }
+        userEventRepository.deleteByUserId(userId);
     }
 
     public void bookAnEvent(UserEvent userEvent) {
+        Events event = eventsRepository.findById(userEvent.getEventId()).get();
+
+        if(event.getSeatsLeft()==0){
+            throw new ObjectValidationException("'seatsLeft' can not be negative");
+        }
 
         UserEvent bookEvent = userEventRepository.findByEventIdAndUserId(userEvent.getEventId(), userEvent.getUserId());
 
         if(Objects.nonNull(bookEvent)){
 
             if(bookEvent.isBooked()) {
-                bookEvent.setBooked(false);
+                event.setSeatsLeft(event.getSeatsLeft()+1);
             }else{
-                bookEvent.setBooked(true);
+                event.setSeatsLeft(event.getSeatsLeft()-1);
             }
+
+            bookEvent.setBooked(!bookEvent.isBooked());
         }
         else {
             bookEvent = UserEvent.builder()
                     .id(UUID.randomUUID().toString())
                     .eventId(userEvent.getEventId())
                     .userId(userEvent.getUserId())
-                    .booked(true)
+                    .booked(userEvent.isBooked())
                     .build();
+
+            event.setSeatsLeft(event.getSeatsLeft()-1);
         }
 
+        eventsRepository.save(event);
         userEventRepository.save(bookEvent);
     }
 
@@ -64,19 +75,14 @@ public class UserEventService {
         UserEvent bookmarkEvent = userEventRepository.findByEventIdAndUserId(userEvent.getEventId(), userEvent.getUserId());
 
         if(Objects.nonNull(bookmarkEvent)){
-
-            if(bookmarkEvent.isBookmarked()) {
-                bookmarkEvent.setBookmarked(false);
-            }else{
-                bookmarkEvent.setBookmarked(true);
-            }
+            bookmarkEvent.setBookmarked(!bookmarkEvent.isBookmarked());
         }
         else {
             bookmarkEvent = UserEvent.builder()
                     .id(UUID.randomUUID().toString())
                     .eventId(userEvent.getEventId())
                     .userId(userEvent.getUserId())
-                    .bookmarked(true)
+                    .bookmarked(userEvent.isBookmarked())
                     .build();
         }
 
@@ -88,19 +94,14 @@ public class UserEventService {
         UserEvent attendEvent = userEventRepository.findByEventIdAndUserId(userEvent.getEventId(), userEvent.getUserId());
 
         if(Objects.nonNull(attendEvent)){
-
-            if(attendEvent.isAttended()) {
-                attendEvent.setAttended(false);
-            }else{
-                attendEvent.setAttended(true);
-            }
+            attendEvent.setAttended(!attendEvent.isAttended());
         }
         else {
             attendEvent = UserEvent.builder()
                     .id(UUID.randomUUID().toString())
                     .eventId(userEvent.getEventId())
                     .userId(userEvent.getUserId())
-                    .attended(true)
+                    .attended(userEvent.isAttended())
                     .build();
         }
 

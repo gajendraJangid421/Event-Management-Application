@@ -23,8 +23,8 @@ public class UsersController {
 
     //for admin and user
     @GetMapping(path = "/{id}")
-    public Users findById(@PathVariable String id) {
-        return usersService.findById(id);
+    public Users getById(@PathVariable String id) {
+        return usersService.getById(id);
     }
 
     //for user
@@ -41,7 +41,7 @@ public class UsersController {
 
     //for user
     @PatchMapping(path = "/{id}")
-    public Users UpdateById(@PathVariable(value = "id") String userId, @Valid @RequestBody Users users){
+    public Users updateById(@PathVariable(value = "id") String userId, @Valid @RequestBody Users users){
         users.setId(userId);
 
         return usersService.update(users);

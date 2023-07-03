@@ -36,7 +36,7 @@ public class EventsController {
     public Events updateById(@PathVariable String id, @Valid @RequestBody Events events){
         events.setId(id);
 
-        return eventsService.update(events);
+        return eventsService.updateById(events);
     }
 
     //for admin

@@ -42,7 +42,7 @@ public class Users {
 
     @Column(name = "role")
     @NotBlank(message = "'role' should not be null or blank")
-    private RoleStatus roleStatus;
+    private Role role;
 
     public void setPassword(String password) {
         BCryptPasswordEncoder bCrypt = new BCryptPasswordEncoder();

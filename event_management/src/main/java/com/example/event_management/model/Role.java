@@ -9,20 +9,19 @@ import java.util.stream.Stream;
 
 @Getter
 @ToString
-public enum RoleStatus {
+public enum Role {
     ADMIN("ADMIN"),
     USER("USER");
 
-
     private String role;
 
-    RoleStatus(String role){
+    Role(String role){
         this.role = role;
     }
 
     @JsonCreator
-    public static RoleStatus decode (final String status){
-        return Stream.of(RoleStatus.values()).filter(result->result.role.equals(status)).findFirst().orElse(null);
+    public static Role decode (final String status){
+        return Stream.of(Role.values()).filter(result->result.role.equals(status)).findFirst().orElse(null);
     }
 
     @JsonValue

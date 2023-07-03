@@ -1,7 +1,7 @@
 package com.example.event_management.service;
 
-import com.example.event_management.exception.ObjectValidationException;
 import com.example.event_management.exception.UnAuthorisedException;
+import com.example.event_management.exception.ValidationException;
 import com.example.event_management.model.Events;
 import com.example.event_management.repository.EventsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +31,8 @@ public class EventsService {
     }
 
     public Events save(Events event) {
-        if(event.getTotalSeats()<1){
-            throw new ObjectValidationException("'totalSeats' should be greater than 0");
+        if(event.getTotalSeats() < 1){
+            throw new ValidationException("'totalSeats' should be greater than 0");
         }
 
         event.setId(UUID.randomUUID().toString());
@@ -43,18 +43,29 @@ public class EventsService {
         return event;
     }
 
-    public Events update(Events events) {
-        if(events.getTotalSeats()<1){
-            throw new ObjectValidationException("'totalSeats' should be greater than 0");
+    public Events updateById(Events updatedEvent) {
+        if(updatedEvent.getTotalSeats() < 1){
+            throw new ValidationException("'totalSeats' should be greater than 0");
         }
 
-        Events event = eventsRepository.findById(events.getId()).orElseThrow(() -> new UnAuthorisedException("Event not found"));
+        Events event = eventsRepository.findById(updatedEvent.getId()).orElseThrow(() -> new UnAuthorisedException("Event not found"));
 
-        event.setName(events.getName());
-        event.setDate(events.getDate());
-        event.setTime(events.getTime());
-        event.setLocation(events.getLocation());
-        event.setTotalSeats(events.getTotalSeats());
+        if(updatedEvent.getTotalSeats() < event.getTotalSeats() - event.getSeatsLeft()){
+            throw new ValidationException("'totalSeats' can not be lesser than seatsLeft");
+        }
+
+        event.setName(updatedEvent.getName());
+        event.setDate(updatedEvent.getDate());
+        event.setTime(updatedEvent.getTime());
+        event.setLocation(updatedEvent.getLocation());
+
+        if(updatedEvent.getTotalSeats() > event.getTotalSeats()){
+            event.setSeatsLeft(event.getSeatsLeft() + (updatedEvent.getTotalSeats() - event.getTotalSeats()));
+        }else if(updatedEvent.getTotalSeats() < event.getTotalSeats()){
+            event.setSeatsLeft(updatedEvent.getTotalSeats() - (event.getTotalSeats() - event.getSeatsLeft()));
+        }
+
+        event.setTotalSeats(updatedEvent.getTotalSeats());
 
         return eventsRepository.save(event);
     }

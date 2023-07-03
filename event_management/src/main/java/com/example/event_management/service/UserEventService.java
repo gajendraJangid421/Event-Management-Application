@@ -1,6 +1,6 @@
 package com.example.event_management.service;
 
-import com.example.event_management.exception.ObjectValidationException;
+import com.example.event_management.exception.ValidationException;
 import com.example.event_management.model.Events;
 import com.example.event_management.model.UserEvent;
 import com.example.event_management.repository.EventsRepository;
@@ -8,7 +8,6 @@ import com.example.event_management.repository.UserEventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.testng.annotations.Test;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -22,14 +21,12 @@ public class UserEventService {
     @Autowired
     EventsRepository eventsRepository;
 
-    @Test
     @Transactional
     public void deleteByEventId(String eventId) {
 
         userEventRepository.deleteByEventId(eventId);
     }
 
-    @Test
     @Transactional
     public void deleteByUserId(String userId) {
 
@@ -39,21 +36,21 @@ public class UserEventService {
     public void bookAnEvent(UserEvent userEvent) {
         Events event = eventsRepository.findById(userEvent.getEventId()).get();
 
-        if(event.getSeatsLeft()==0){
-            throw new ObjectValidationException("'seatsLeft' can not be negative");
+        if(event.getSeatsLeft() == 0 && userEvent.isBooked()){
+            throw new ValidationException("No seat is available. Event is full");
         }
 
         UserEvent bookEvent = userEventRepository.findByEventIdAndUserId(userEvent.getEventId(), userEvent.getUserId());
 
         if(Objects.nonNull(bookEvent)){
 
-            if(bookEvent.isBooked()) {
-                event.setSeatsLeft(event.getSeatsLeft()+1);
+            if(userEvent.isBooked()) {
+                event.setSeatsLeft(event.getSeatsLeft() - 1);
             }else{
-                event.setSeatsLeft(event.getSeatsLeft()-1);
+                event.setSeatsLeft(event.getSeatsLeft() + 1);
             }
 
-            bookEvent.setBooked(!bookEvent.isBooked());
+            bookEvent.setBooked(userEvent.isBooked());
         }
         else {
             bookEvent = UserEvent.builder()
@@ -63,7 +60,7 @@ public class UserEventService {
                     .booked(userEvent.isBooked())
                     .build();
 
-            event.setSeatsLeft(event.getSeatsLeft()-1);
+            event.setSeatsLeft(event.getSeatsLeft() - 1);
         }
 
         eventsRepository.save(event);

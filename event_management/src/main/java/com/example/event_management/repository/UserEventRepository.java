@@ -10,10 +10,10 @@ public interface UserEventRepository extends JpaRepository<UserEvent, String> {
     UserEvent findByEventIdAndUserId(String eventId, String userId);
 
     @Modifying
-    @Query("delete UserEvent userEvent where userEvent.eventId = :eventId")
+    @Query("DELETE UserEvent userEvent WHERE userEvent.eventId = :eventId")
     void deleteByEventId(@Param("eventId") String eventId);
 
     @Modifying
-    @Query("delete UserEvent userEvent where userEvent.userId = :userId")
+    @Query("DELETE UserEvent userEvent WHERE userEvent.userId = :userId")
     void deleteByUserId(@Param("userId") String userId);
 }

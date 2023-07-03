@@ -43,10 +43,10 @@ public class Events {
     private int totalSeats;
 
     @Column(name = "seats_left")
-    @Min(0)
     private int seatsLeft;
 
     @Column(name = "created_by")
     private String createdBy;
 
 }
+

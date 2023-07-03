@@ -30,17 +30,18 @@ public class AuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
-                                    FilterChain chain) throws IOException, ServletException {
+                                    FilterChain filterChain) throws IOException, ServletException {
         String reqToken=request.getHeader(Auth_Token_Header);
         if(reqToken == null || reqToken.isEmpty()){
-            chain.doFilter(request,response);
+            filterChain.doFilter(request,response);
 
         }
         else {
             UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            chain.doFilter(request, response);
+            filterChain.doFilter(request, response);
             }
+
 
         }
 

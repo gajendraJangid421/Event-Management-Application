@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -28,18 +30,16 @@ public class SpringSecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http.cors().and().csrf().disable().authorizeHttpRequests((authorize) -> authorize
 
-                        .requestMatchers(HttpMethod.GET, "/api/users/{id}").hasRole("Admin")
-                        .requestMatchers(HttpMethod.POST,
-                                "/api/users/sign-up").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/login").permitAll()
+                        .requestMatchers("/**").permitAll()
+
+
 
 
                 )
-
-
-                .addFilterBefore(authorizationFilter,OncePerRequestFilter.class);
+                .addFilterBefore(authorizationFilter, BasicAuthenticationFilter.class);
         return http.build();
     }
 

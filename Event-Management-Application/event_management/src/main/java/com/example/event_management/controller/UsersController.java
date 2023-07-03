@@ -1,5 +1,4 @@
 package com.example.event_management.controller;
-
 import com.example.event_management.model.ForgetPassword;
 import com.example.event_management.model.ResetPasswordRequest;
 import com.example.event_management.model.Users;
@@ -7,7 +6,6 @@ import com.example.event_management.service.UsersService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController

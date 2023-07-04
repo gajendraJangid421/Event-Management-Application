@@ -21,7 +21,7 @@
 ```
 
 
-## Step 3:create a folder in resources/Sql
+## Step 3: Create a folder in resources/Sql
 
 ###  Include changelog-master.xml in resources/Sql
 
@@ -59,13 +59,12 @@ Note: Update all the changelog files in <include " "/> above
 ```
 
 
-## Step 5 -> Make changes in the application.properties
+## Step 5: Make changes in the application.properties
 
 	spring.jpa.defer-datasource-initialization=false
 	spring.liquibase.change-log=classpath:Sql/changelog-master.xml
 	spring.liquibase.enabled=true
 
 Make sure the auto ddl update is off
-
 ------------------------------------------------------------------------------------------------------------------------
 	

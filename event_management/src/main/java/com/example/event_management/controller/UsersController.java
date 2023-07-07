@@ -5,6 +5,8 @@ import com.example.event_management.model.ResetPasswordRequest;
 import com.example.event_management.model.Users;
 import com.example.event_management.service.UsersService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -21,6 +23,16 @@ public class UsersController {
         return usersService.findAll();
     }
 
+    //for admin
+    @GetMapping(path = "/page")
+    public List<Users> findUsersWithPagination(
+            @RequestParam(defaultValue = "0", required = false) int offset,
+            @RequestParam(defaultValue = "10", required = false) @Max(value = 10) int limit,
+            @RequestParam(defaultValue = "username", required = false) String sortBy){
+
+        return usersService.findUsersWithPagination(offset, limit, sortBy);
+    }
+
     //for admin and user
     @GetMapping(path = "/{id}")
     public Users getById(@PathVariable String id) {
@@ -28,7 +40,7 @@ public class UsersController {
     }
 
     //for user
-    @PostMapping
+    @PostMapping(path = "sign-up")
     public Users save(@Valid @RequestBody Users users) {
         return usersService.save(users);
     }

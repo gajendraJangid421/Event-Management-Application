@@ -26,6 +26,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Configuration
@@ -43,30 +44,24 @@ public class AuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
 
         String requestToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-        String path=request.getRequestURI();
+        String path = request.getRequestURI();
 
-        if(path.equals("/api/login") || path.equals("/api/users")){
-
-            if (Objects.nonNull(requestToken) && !requestToken.isEmpty()) {
-                UsernamePasswordAuthenticationToken authentication = getAuthentication(request,response);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
+        if(path.equals("/api/login") || path.equals("/api/users/sign-up") || path.equals("/api/users/forget-password")){
 
             filterChain.doFilter(request, response);
         }
         else{
             try {
 
-                if (requestToken != null && !requestToken.isEmpty()) {
+                if(StringUtils.isEmpty(requestToken)) {
+                    throw new UnAuthorisedException("Token not found");
+                }
+                else{
                     UsernamePasswordAuthenticationToken authentication = getAuthentication(request,response);
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                     filterChain.doFilter(request, response);
                 }
-                else {
-                    throw new UnAuthorisedException("Token not found");
-                }
-            }
-            catch (UnAuthorisedException e){
+            } catch (UnAuthorisedException e){
 
                 response.setContentType("application/json");
                 response.setStatus(e.getHttpStatus().value());

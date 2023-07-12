@@ -27,10 +27,10 @@ public class EventsService {
         return eventsRepository.findAll();
     }
 
-    public List<Events>  findEventsWithPagination(int offset, int limit, String sortBy) {
+    public List<Events>  findEventsWithPagination(int pageNumber, int limit, String sortBy) {
         Sort sort = Sort.by(Sort.Direction.ASC, sortBy);
 
-        Page<Events> page = eventsRepository.findAll(PageRequest.of(offset, limit, sort));
+        Page<Events> page = eventsRepository.findAll(PageRequest.of(pageNumber, limit, sort));
 
         return page.getContent();
     }

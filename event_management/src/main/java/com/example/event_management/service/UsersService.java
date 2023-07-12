@@ -2,7 +2,6 @@ package com.example.event_management.service;
 
 import com.example.event_management.exception.DuplicateUsernameException;
 import com.example.event_management.exception.UnAuthorisedException;
-import com.example.event_management.model.Events;
 import com.example.event_management.model.ForgetPassword;
 import com.example.event_management.model.ResetPasswordRequest;
 import com.example.event_management.repository.UsersRepository;
@@ -33,10 +32,10 @@ public class UsersService {
         return usersRepository.findAll();
     }
 
-    public List<Users>  findUsersWithPagination(int offset, int limit, String sortBy) {
+    public List<Users>  findUsersWithPagination(int pageNumber, int limit, String sortBy) {
         Sort sort = Sort.by(Sort.Direction.ASC, sortBy);
 
-        Page<Users> page = usersRepository.findAll(PageRequest.of(offset, limit, sort));
+        Page<Users> page = usersRepository.findAll(PageRequest.of(pageNumber, limit, sort));
 
         return page.getContent();
     }

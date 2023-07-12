@@ -9,7 +9,7 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 @ResponseStatus(code = UNAUTHORIZED)
 public class UnAuthorisedException extends RuntimeException {
 
-    private HttpStatus httpStatus= UNAUTHORIZED;
+    private HttpStatus httpStatus = UNAUTHORIZED;
 
     public UnAuthorisedException(String message){
         super(message);

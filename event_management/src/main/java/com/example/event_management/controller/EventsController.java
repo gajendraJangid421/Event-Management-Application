@@ -21,14 +21,14 @@ public class EventsController {
     }
 
     //for admin and user
-    @GetMapping(path = "/page")
+    @GetMapping(path = "/search")
     @ResponseBody
     public List<Events> findEventsWithPagination(
-            @RequestParam(defaultValue = "0", required = false) int offset,
-            @RequestParam(defaultValue = "5", required = false) @Max(value = 5) int limit,
+            @RequestParam(defaultValue = "0", required = false) int pageNumber,
+            @RequestParam(defaultValue = "10", required = false) @Max(value = 10, message = "greater than 10 is not allowed") int limit,
             @RequestParam(defaultValue = "name", required = false) String sortBy) {
 
-        return eventsService.findEventsWithPagination(offset, limit, sortBy);
+        return eventsService.findEventsWithPagination(pageNumber, limit, sortBy);
     }
 
     //for admin

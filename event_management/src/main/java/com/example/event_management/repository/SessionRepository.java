@@ -10,6 +10,8 @@ import java.util.Optional;
 public interface SessionRepository extends JpaRepository<Session, String> {
 
     void deleteByToken(String token);
-    @Query("SELECT s FROM Session s WHERE s.token =:reqToken")
-    Optional<Session> findByToken(@Param("reqToken") String reqToken);
+
+    @Query("SELECT s FROM Session s WHERE s.token = :requestToken")
+    Session findByToken(@Param("requestToken") String requestToken);
+    
 }

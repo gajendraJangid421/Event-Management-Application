@@ -1,7 +1,3 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-
 
 package com.example.event_management.security;
 import java.util.Arrays;
@@ -25,12 +21,12 @@ public class SpringSecurityConfiguration {
     private AuthorizationFilter authorizationFilter;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable().authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/**").permitAll()
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 
-                )
+        http.cors().and().csrf().disable().authorizeHttpRequests((authorize) ->
+                authorize.requestMatchers("/**").permitAll())
                 .addFilterBefore(authorizationFilter, BasicAuthenticationFilter.class);
+
         return http.build();
     }
 

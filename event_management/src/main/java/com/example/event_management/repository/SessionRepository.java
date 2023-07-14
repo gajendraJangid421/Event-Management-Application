@@ -13,4 +13,5 @@ public interface SessionRepository extends JpaRepository<Session, String> {
 
     @Query("SELECT s FROM Session s WHERE s.token = :requestToken")
     Session findByToken(@Param("requestToken") String requestToken);
+    
 }
